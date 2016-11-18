@@ -29,7 +29,7 @@ int main()
         * This will return a small integer and is used for all references to this socket. If the socket call fails, 
           it returns -1.
     */
-
+    int clientCount=1; 
     client = socket(AF_INET, SOCK_STREAM, 0);//socket() function creates a new socket.
 
     /* ---------- ESTABLISHING SOCKET CONNECTION ----------*/
@@ -55,7 +55,9 @@ int main()
         return -1;
     }
     size = sizeof(server_addr);
-    cout << "=> Looking for clients..." << endl;
+    bool busy=false;
+    start:
+    cout << "\n=> Looking for clients..." << endl;
 
     /* ------------- LISTENING CALL ------------- */
     /* ---------------- listen() ---------------- */
@@ -69,7 +71,7 @@ int main()
         \ The maximum size permitted by most systems is 5.
     */    
 
-    listen(client, 1);
+    listen(client,1);
 
     /* ------------- ACCEPTING CLIENTS  ------------- */
 
@@ -82,7 +84,7 @@ int main()
         \ The third argument is the size of this structure.
     */
 
-    int clientCount = 1;
+    //int clientCount = 1;
     server = accept(client,(struct sockaddr *)&server_addr,&size);
 
     // first check if it is valid or not
@@ -91,8 +93,18 @@ int main()
 
     while (server > 0) 
     {
-        strcpy(buffer, "=> Server connected...\n");
-        //write(server, buffer, bufsize);
+	if(busy)
+	{
+        	strcpy(buffer,"busy");
+        	write(server, buffer, bufsize);
+		cout<<"buffer\n";
+	}
+	else
+	{
+		strcpy(buffer,"not_busy");
+        	write(server, buffer, bufsize);
+	}
+	busy=true;
         cout << "=> Connected with the client #" << clientCount << ", you are good to go..." << endl;
         cout << "\n=> Enter .bye to end the connection\n" << endl;
 	//cout<<"You reached to server\n";
@@ -104,30 +116,23 @@ int main()
             \ It will read either the total number of characters in the socket or size of buffer.
         */
 
-        cout << "(S)Client: ";
-        do {
-            read(server, buffer,bufsize);
-            cout << buffer << " ";
-          	if (strcmp(buffer,".bye")==0) {
-                 //*buffer = '*';
-                isExit = true;
-            }
-		//cout<<"Buffer value :"<<buffer<<"\n";
-        } while (*buffer != '.');
-
-      do {       
-            cout << "\n(S)Client: ";
+      do {  
+	        
+            cout << "\n(S)Client "<<clientCount<<":";
             do {
-                read(server, buffer,bufsize);
+                read(server,buffer,bufsize);
                 cout << buffer << " ";
 		
                if (strcmp(buffer,".bye")==0) {
-                   
-                    isExit = true;
+                    cout<<"\nClient "<<clientCount<<" is terminated his connection.\n";
+                    clientCount++;
+		    isExit = true;    
                 }
             } while (*buffer !='.');
         } while (!isExit);
-
+	  isExit=false;
+	busy=false;
+	  goto start;
         /* ---------------- CLOSE CALL ------------- */
         /* ----------------- close() --------------- */
 
