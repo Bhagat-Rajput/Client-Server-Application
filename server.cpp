@@ -1,3 +1,5 @@
+/*----------- Server Side Code ----------*/
+
 #include <iostream>
 #include <string.h>
 #include <sys/types.h>
