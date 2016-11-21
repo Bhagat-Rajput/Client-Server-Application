@@ -67,9 +67,9 @@ int main()
     if (connect(client,(struct sockaddr *)&server_addr, sizeof(server_addr)) == 0)
         cout << "=> Connection to the server port number: " << portNum << endl;
     cout << "=> Awaiting confirmation from the server..." << endl;
-    read(client, buffer, bufsize);
-    if(strcmp(buffer,"not_busy")==0)
-    {
+   // read(client, buffer, bufsize);
+    //if(strcmp(buffer,"not_busy")==0)
+    //{
      cout << "=> Connection confirmed, you are good to go..."<<buffer<<"\n";
      cout << "\n\n=> Enter .bye to end the connection\n" << endl;
 
@@ -96,11 +96,7 @@ int main()
     */
 
     cout << "\n=> Connection terminated.\nGoodbye...\n";
-    }
-else
-{
-cout<<"Server is busy now please try after some time";
-}
+ 
 
     close(client);
     return 0;

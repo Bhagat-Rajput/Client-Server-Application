@@ -22,7 +22,7 @@ int main()
     char buffer[bufsize]; /*!< server reads characters from the socket connection into a dynamic variable (buffer). */
     struct sockaddr_in server_addr; /*!< serv_addr will contain the address of the server. */
     socklen_t size; /*!< socklen_t  is an intr type of width of at least 32 bits. */
-
+    int clientCount = 0;
     //! Socket function
     /*!
         * AF_INET: address domain of the socket.
@@ -30,8 +30,7 @@ int main()
         * Third is a protocol argument: should always be 0. The OS will choose the most appropiate protocol.
         * This will return a small integer and is used for all references to this socket. If the socket call fails, 
           it returns -1.
-    */
-    int clientCount=1; 
+    */ 
     client = socket(AF_INET, SOCK_STREAM, 0);//socket() function creates a new socket.
 
     /* ---------- ESTABLISHING SOCKET CONNECTION ----------*/
@@ -57,7 +56,7 @@ int main()
         return -1;
     }
     size = sizeof(server_addr);
-    bool busy=false;
+   // bool busy=false;
     start:
     cout << "\n=> Looking for clients..." << endl;
 
@@ -86,16 +85,16 @@ int main()
         \ The third argument is the size of this structure.
     */
 
-    //int clientCount = 1;
+   // int clientCount = 1;
     server = accept(client,(struct sockaddr *)&server_addr,&size);
-
+    clientCount++;
     // first check if it is valid or not
     if (server < 0) 
         cout << "=> Error on accepting..." << endl;
 
     while (server > 0) 
     {
-	if(busy)
+	/*if(busy)
 	{
         	strcpy(buffer,"busy");
         	write(server, buffer, bufsize);
@@ -106,7 +105,7 @@ int main()
 		strcpy(buffer,"not_busy");
         	write(server, buffer, bufsize);
 	}
-	busy=true;
+	busy=true;*/
         cout << "=> Connected with the client #" << clientCount << ", you are good to go..." << endl;
         cout << "\n=> Enter .bye to end the connection\n" << endl;
 	//cout<<"You reached to server\n";
@@ -118,7 +117,11 @@ int main()
             \ It will read either the total number of characters in the socket or size of buffer.
         */
 
-      do {  
+
+	int pid=fork();
+	if(pid==0)
+	{     
+	 do {  
 	        
             cout << "\n(S)Client "<<clientCount<<":";
             do {
@@ -132,8 +135,9 @@ int main()
                 }
             } while (*buffer !='.');
         } while (!isExit);
-	  isExit=false;
-	busy=false;
+	 
+} isExit=false;
+	//busy=false;
 	  goto start;
         /* ---------------- CLOSE CALL ------------- */
         /* ----------------- close() --------------- */
