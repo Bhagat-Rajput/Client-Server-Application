@@ -4,4 +4,4 @@ client: client.cpp server
 server: server.cpp
 	g++ server.cpp -o server
 clean: 
-	rm *.o a.out
+	rm *.o a.out server client

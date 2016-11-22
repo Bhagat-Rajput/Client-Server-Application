@@ -57,9 +57,9 @@ int main()
     }
     size = sizeof(server_addr);
    // bool busy=false;
-    start:
+    
     cout << "\n=> Looking for clients..." << endl;
-
+    start: /*!< goto call will start from here */
     /* ------------- LISTENING CALL ------------- */
     /* ---------------- listen() ---------------- */
 
@@ -106,7 +106,7 @@ int main()
         	write(server, buffer, bufsize);
 	}
 	busy=true;*/
-        cout << "=> Connected with the client #" << clientCount << ", you are good to go..." << endl;
+        cout << "\n=>Connected with the client #" << clientCount << ", you are good to go..." << endl;
         cout << "\n=> Enter .bye to end the connection\n" << endl;
 	//cout<<"You reached to server\n";
 
@@ -117,27 +117,22 @@ int main()
             \ It will read either the total number of characters in the socket or size of buffer.
         */
 
-
 	int pid=fork();
 	if(pid==0)
 	{     
-	 do {  
-	        
-            cout << "\n(S)Client "<<clientCount<<":";
-            do {
+	  do {      
+		cout << "\n(S)Client "<<clientCount<<":";
                 read(server,buffer,bufsize);
-                cout << buffer << " ";
-		
-               if (strcmp(buffer,".bye")==0) {
+                cout << buffer << " ";		
+                if (strcmp(buffer,".bye")==0) {
                     cout<<"\nClient "<<clientCount<<" is terminated his connection.\n";
-                    clientCount++;
+                    //clientCount++;
 		    isExit = true;    
                 }
-            } while (*buffer !='.');
-        } while (!isExit);
-	 
-} isExit=false;
-	//busy=false;
+          } while (!isExit); 
+        } 
+          isExit=false;
+	  //busy=false;
 	  goto start;
         /* ---------------- CLOSE CALL ------------- */
         /* ----------------- close() --------------- */

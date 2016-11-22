@@ -77,15 +77,12 @@ int main()
 
     do {
         cout << "(C)Client: ";
-        do {
-            cin >> buffer;	
-            write(client, buffer,bufsize);
-            if (strcmp(buffer,".bye")==0) {
-                write(client, buffer, bufsize);
-                isExit = true;
-            }
-        } while (*buffer !='.');
-	
+        cin.getline(buffer,256);	
+        write(client, buffer,bufsize);
+        if (strcmp(buffer,".bye")==0) {
+           write(client, buffer, bufsize);
+           isExit = true;
+        }
     } while (!isExit);
 
     /* ----------------- close() --------------- */
